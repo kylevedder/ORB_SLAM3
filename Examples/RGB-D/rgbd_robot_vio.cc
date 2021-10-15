@@ -49,10 +49,26 @@ int main(int argc, char **argv)
     vector<double> vTimestampsImu;
     vector<cv::Point3f> vAcc;
     vector<cv::Point3f> vGyro;
+    cout << "Path to IMU data: " << string(argv[5]) << endl;
     LoadIMU(string(argv[5]), vTimestamps, vAcc, vGyro);
+
+    cout << "Found " << vstrImageFilenamesRGB.size() << " RGB images" << endl;
+    cout << "Found " << vstrImageFilenamesD.size() << " Depth images" << endl;
+    cout << "Found " << vTimestampsImu.size() << " IMU updates" << endl;
+
+    if (vAcc.size() != vGyro.size()) {
+        cerr << "IMU must have the same number of acc and gyro updates!" << endl;
+        return 1;
+    }
+
+    if (vAcc.size() != vstrImageFilenamesRGB.size()) {
+        cerr << "IMU must have the same number of acc and RGB updates!" << endl;
+        return 1;
+    }
 
     if (vTimestampsImu.size() != vstrImageFilenamesRGB.size()) {
         cerr << "IMU must have the same number of entries as RGB images!" << endl;
+        return 1;
     }
 
     // Check consistency in the number of images and depthmaps
@@ -81,6 +97,7 @@ int main(int argc, char **argv)
     cv::Mat imRGB, imD;
     for(int ni=0; ni<nImages; ni++)
     {
+        cout << "Image idx: " << ni << endl;
         // Read image and depthmap from file
         imRGB = cv::imread(string(argv[3])+"/"+vstrImageFilenamesRGB[ni],cv::IMREAD_UNCHANGED); //,cv::IMREAD_UNCHANGED);
         imD = cv::imread(string(argv[3])+"/"+vstrImageFilenamesD[ni],cv::IMREAD_UNCHANGED); //,cv::IMREAD_UNCHANGED);
@@ -97,6 +114,8 @@ int main(int argc, char **argv)
             return 1;
         }
 
+        cout << "Before TrackRGBD" << endl;
+
 #ifdef COMPILEDWITHC11
         std::chrono::steady_clock::time_point t1 = std::chrono::steady_clock::now();
 #else
@@ -111,7 +130,7 @@ int main(int argc, char **argv)
 #else
         std::chrono::monotonic_clock::time_point t2 = std::chrono::monotonic_clock::now();
 #endif
-
+        cout << "After TrackRGBD" << endl;
         double ttrack= std::chrono::duration_cast<std::chrono::duration<double> >(t2 - t1).count();
 
         vTimesTrack[ni]=ttrack;
@@ -205,7 +224,7 @@ void LoadIMU(const string &strImuPath, vector<double> &vTimeStamps, vector<cv::P
             item = s.substr(0, pos);
             data[6] = stod(item);
 
-            vTimeStamps.push_back(data[0]/1e9);
+            vTimeStamps.push_back(data[0]);
             vAcc.push_back(cv::Point3f(data[4],data[5],data[6]));
             vGyro.push_back(cv::Point3f(data[1],data[2],data[3]));
         }
