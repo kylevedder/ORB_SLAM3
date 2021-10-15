@@ -137,6 +137,9 @@ add_executable(rgbd_tum
 Examples/RGB-D/rgbd_tum.cc)
 target_link_libraries(rgbd_tum ${PROJECT_NAME})
 
+add_executable(rgbd_robot_vio
+Examples/RGB-D/rgbd_robot_vio.cc)
+target_link_libraries(rgbd_robot_vio ${PROJECT_NAME})
 
 # Stereo examples
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/Examples/Stereo)
