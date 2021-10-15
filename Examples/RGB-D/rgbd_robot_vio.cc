@@ -50,7 +50,7 @@ int main(int argc, char **argv)
     vector<cv::Point3f> vAcc;
     vector<cv::Point3f> vGyro;
     cout << "Path to IMU data: " << string(argv[5]) << endl;
-    LoadIMU(string(argv[5]), vTimestamps, vAcc, vGyro);
+    LoadIMU(string(argv[5]), vTimestampsImu, vAcc, vGyro);
 
     cout << "Found " << vstrImageFilenamesRGB.size() << " RGB images" << endl;
     cout << "Found " << vstrImageFilenamesD.size() << " Depth images" << endl;
@@ -216,7 +216,7 @@ void LoadIMU(const string &strImuPath, vector<double> &vTimeStamps, vector<cv::P
             size_t pos = 0;
             double data[7];
             int count = 0;
-            while ((pos = s.find(',')) != string::npos) {
+            while ((pos = s.find(' ')) != string::npos) {
                 item = s.substr(0, pos);
                 data[count++] = stod(item);
                 s.erase(0, pos + 1);
