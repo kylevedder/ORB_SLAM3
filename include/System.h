@@ -86,7 +86,8 @@ public:
         STEREO=1,
         RGBD=2,
         IMU_MONOCULAR=3,
-        IMU_STEREO=4
+        IMU_STEREO=4,
+        IMU_RGBD=5,
     };
 
     // File type
