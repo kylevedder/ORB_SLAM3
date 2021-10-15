@@ -2583,7 +2583,7 @@ bool Tracking::TrackReferenceKeyFrame()
 
     if(nmatches<15)
     {
-        cout << "TRACK_REF_KF: Less than 15 matches!!\n";
+        cout << "TRACK_REF_KF: Less than 15 matches!! Found " << nmatches << " matches \n";
         return false;
     }
 
