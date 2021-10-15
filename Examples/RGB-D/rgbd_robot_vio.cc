@@ -85,7 +85,7 @@ int main(int argc, char **argv)
         vector<ORB_SLAM3::IMU::Point> vImuMeas = 
           {ORB_SLAM3::IMU::Point(vAcc[ni].x,vAcc[ni].y,vAcc[ni].z,
                                 vGyro[ni].x,vGyro[ni].y,vGyro[ni].z,
-                                vTimestampsImu[ni]))};
+                                vTimestampsImu[ni])};
         double tframe = vTimestamps[ni];
 
         if(imRGB.empty())
