@@ -422,6 +422,11 @@ void System::SaveTrajectoryTUM(const string &filename)
     }
 
     vector<KeyFrame*> vpKFs = mpAtlas->GetAllKeyFrames();
+    if (vpKFs.size() <= 0) {
+        cerr << "ERROR: no keyframes found!" << endl;
+        return;
+    }
+
     sort(vpKFs.begin(),vpKFs.end(),KeyFrame::lId);
 
     // Transform all keyframes so that the first keyframe is at the origin.
