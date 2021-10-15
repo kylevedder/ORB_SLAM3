@@ -261,8 +261,9 @@ cv::Mat System::TrackRGBD(const cv::Mat &im, const cv::Mat &depthmap, const doub
         }
     }
     
-    for(size_t i_imu = 0; i_imu < vImuMeas.size(); i_imu++)
-            mpTracker->GrabImuData(vImuMeas[i_imu]);
+    if (mSensor == System::IMU_RGBD)
+        for(size_t i_imu = 0; i_imu < vImuMeas.size(); i_imu++)
+                mpTracker->GrabImuData(vImuMeas[i_imu]);
 
     cv::Mat Tcw = mpTracker->GrabImageRGBD(im,depthmap,timestamp,filename);
 
@@ -532,7 +533,7 @@ void System::SaveTrajectoryEuRoC(const string &filename)
     // Transform all keyframes so that the first keyframe is at the origin.
     // After a loop closure the first keyframe might not be at the origin.
     cv::Mat Twb; // Can be word to cam0 or world to b dependingo on IMU or not.
-    if (mSensor==IMU_MONOCULAR || mSensor==IMU_STEREO)
+    if (mSensor==IMU_MONOCULAR || mSensor==IMU_STEREO || mSensor==IMU_RGBD)
         Twb = vpKFs[0]->GetImuPose();
     else
         Twb = vpKFs[0]->GetPoseInverse();
@@ -579,7 +580,7 @@ void System::SaveTrajectoryEuRoC(const string &filename)
 
         Trw = Trw*pKF->GetPose()*Twb; // Tcp*Tpw*Twb0=Tcb0 where b0 is the new world reference
 
-        if (mSensor == IMU_MONOCULAR || mSensor == IMU_STEREO)
+        if (mSensor == IMU_MONOCULAR || mSensor == IMU_STEREO || mSensor==IMU_RGBD)
         {
             cv::Mat Tbw = pKF->mImuCalib.Tbc*(*lit)*Trw;
             cv::Mat Rwb = Tbw.rowRange(0,3).colRange(0,3).t();
@@ -634,7 +635,7 @@ void System::SaveKeyFrameTrajectoryEuRoC(const string &filename)
 
         if(pKF->isBad())
             continue;
-        if (mSensor == IMU_MONOCULAR || mSensor == IMU_STEREO)
+        if (mSensor == IMU_MONOCULAR || mSensor == IMU_STEREO || mSensor==IMU_RGBD)
         {
             cv::Mat R = pKF->GetImuRotation().t();
             vector<float> q = Converter::toQuaternion(R);
